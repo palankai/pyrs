@@ -11,9 +11,9 @@ setup(
     name='pyrs',
     author='Csaba Palankai',
     author_email='csaba.palankai@gmail.com',
-    packages=['pyrs'],
+    packages=['pyrs', 'pyrs.ext'],
     include_package_data=True,
-    version='0.1.1',
+    version='0.1.4',
     description="Python microservice framework",
     long_description=read('README.rst'),
     classifiers=[
