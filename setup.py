@@ -15,6 +15,7 @@ setup(
     include_package_data=True,
     version='0.2',
     description="Python microservice framework",
+    url='http://pyrs.readthedocs.org/',
     long_description=read('README.rst'),
     classifiers=[
         'Development Status :: 4 - Beta',
