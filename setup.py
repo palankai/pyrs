@@ -13,7 +13,7 @@ setup(
     author_email='csaba.palankai@gmail.com',
     packages=find_packages(),
     include_package_data=True,
-    version='0.3.1',
+    version='0.2.1',
     description="Python microservice framework",
     url='http://pyrs.readthedocs.org/',
     long_description=read('README.rst'),
