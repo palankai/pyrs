@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 
@@ -11,9 +11,9 @@ setup(
     name='pyrs',
     author='Csaba Palankai',
     author_email='csaba.palankai@gmail.com',
-    packages=['pyrs', 'pyrs.ext'],
+    packages=find_packages(),
     include_package_data=True,
-    version='0.3',
+    version='0.3.1',
     description="Python microservice framework",
     url='http://pyrs.readthedocs.org/',
     long_description=read('README.rst'),
