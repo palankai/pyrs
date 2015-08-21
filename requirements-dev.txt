@@ -1,0 +1,3 @@
+Sphinx
+autopep8
+pudb

@@ -7,3 +7,4 @@ TAGS
 .coverage
 build/
 dist/
+.vimrc_local
