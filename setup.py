@@ -13,7 +13,7 @@ setup(
     author_email='csaba.palankai@gmail.com',
     packages=find_packages(),
     include_package_data=True,
-    version='0.3',
+    version='0.3.2',
     description="Python microservice framework",
     url='http://pyrs.readthedocs.org/',
     long_description=read('README.rst'),
@@ -36,6 +36,6 @@ setup(
     ],
     keywords=('service', 'rest', 'restful', 'swagger', 'resource'),
     zip_safe=False,
-    namespace_packages = ['pyrs'],
+#    namespace_packages = ['pyrs'],
     install_requires=[r for r in read("requirements.txt").split("\n") if r],
 )
