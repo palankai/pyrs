@@ -4,61 +4,68 @@ Context usage:
 .. code:: python
 
     ctx = Context(value=1)
-    with ctx as c:
-        call_a_function(ctx=c)
+    with ctx:
+        call_a_function(ctx=ctx)
 
 A bit more readable version:
 
 .. code:: python
 
     ctx = Context(value=1)
-    with ctx.copywith(value=2, new_value=3) as c:
+    with ctx.copy(value=2, new_value=3) as c:
         call_a_function(ctx=c)
 """
-import contextlib
+import threading
 
 
-class Context(dict):
+class Context(threading.local):
     """
-    Context provide basic functionality managing through calls.
-    Can be used as a context manager.
-
-    Predefined items: global and local
-
-    .. code:: python
-
-        ctx = Context(value=1, global={'value': 1}, local={'value': 1})
-
-        with ctx.copywith(value=2, new_value=3) as c:
-            ctx['global']['value']  # contains 1
-            ctx['local']  # It's an empty dict
-            call_a_function(ctx=c)
-
+    This is a thread safe stack based implementation of context.
     """
 
     def __init__(self, *args, **kwargs):
-        super(Context, self).__init__(*args, **kwargs)
-        if 'global' not in self:
-            self['global'] = {}
-        if 'local' not in self:
-            self['local'] = {}
+        super(Context, self).__init__()
+        self.clear(*args, **kwargs)
+        self.stack = []
+
+    def __getitem__(self, name):
+        return self.data[name]
+
+    def __setitem__(self, name, value):
+        self.data[name] = value
+
+    def __iter__(self):
+        return self.data.__iter__()
+
+    def keys(self):
+        return self.data.keys()
+
+    def items(self):
+        return self.data.items()
+
+    def copy(self, *args, **kwargs):
+        return self.__class__(self.data).update(*args, **kwargs)
+
+    def update(self, *args, **kwargs):
+        self.data.update(*args, **kwargs)
+        return self
+
+    def clear(self, *args, **kwargs):
+        self.data = dict(*args, **kwargs)
+        return self
+
+    def _push(self):
+        self.stack.append(self.data)
+        self.data = self.data.copy()
+
+    def _pop(self):
+        self.data = self.stack.pop()
 
     def __enter__(self):
-        cp = self.copy()
-        cp['local'] = {}
-        return cp
+        self._push()
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        pass
+        self._pop()
 
-    @contextlib.contextmanager
-    def copywith(self, *args, **kwargs):
-        """Make a copy of itself and pass back to inside context.
-
-        **Cauction:** It uses simple a `dict.copy` means and if any item itself
-        mutable, there is reflecting outside from the context manager as well.
-        *Use immutable values if it's possible!*
-        """
-        with self as copied:
-            copied.update(*args, **kwargs)
-            yield copied
+ctx = Context()

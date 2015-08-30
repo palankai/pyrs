@@ -1,4 +1,6 @@
+import threading
 import unittest
+
 
 from .. import base
 
@@ -11,41 +13,8 @@ class TestContext(unittest.TestCase):
 
         self.assertEqual(ctx['something'], 'test')
 
-    def test_global_exists(self):
-        ctx = base.Context()
-
-        self.assertEqual(ctx['global'], {})
-
-    def test_context_manager(self):
-        ctx = base.Context()
-        ctx['something'] = 'test'
-        ctx['over'] = 'test'
-
-        with ctx as ictx:
-            ictx['else'] = 'else'
-            ictx['over'] = 'over'
-
-        self.assertNotIn('else', ctx)
-        self.assertEqual(ctx['something'], 'test')
-        self.assertEqual(ictx['over'], 'over')
-        self.assertEqual(ctx['over'], 'test')
-
-    def test_context_manager_copywith(self):
-        ctx = base.Context()
-        ctx['something'] = 'test'
-        ctx['over'] = 'test'
-
-        with ctx.copywith() as ictx:
-            ictx['else'] = 'else'
-            ictx['over'] = 'over'
-
-        self.assertNotIn('else', ctx)
-        self.assertEqual(ctx['something'], 'test')
-        self.assertEqual(ictx['over'], 'over')
-        self.assertEqual(ctx['over'], 'test')
-
     def test_context_manager_global_behaviour(self):
-        ctx = base.Context()
+        ctx = base.Context({'global': {}})
         ctx['global']['x'] = 1
 
         with ctx as ictx:
@@ -53,12 +22,44 @@ class TestContext(unittest.TestCase):
 
         self.assertEqual(ctx['global'], {'x': 2})
 
-    def test_context_manager_local_behaviour(self):
+    def test_with_other_thread(self):
         ctx = base.Context()
-        ctx['local']['x'] = 1
+        ctx['exists'] = 1
+        ctx['obj'] = [1, 2, 3]
 
-        with ctx as ictx:
-            ictx['local']['y'] = 1
+        def other_thread():
+            ctx['obj'] = [1, 2, 3, 4]
+            ctx['other'] = 1
+            ctx['exists'] = 2
+        t = threading.Thread(target=other_thread)
+        t.start()
+        t.join()
+        self.assertNotIn('other', ctx)
+        self.assertEqual(ctx['exists'], 1)
+        self.assertEqual(ctx['obj'], [1, 2, 3])
 
-        self.assertEqual(ctx['local'], {'x': 1})
-        self.assertEqual(ictx['local'], {'y': 1})
+    def test_dictlike(self):
+        dl = base.Context()
+        dl['aaa'] = 12
+
+        self.assertEqual(dict(dl), {'aaa': 12})
+
+    def test_context_manager_copywith(self):
+        ctx = base.Context()
+        ctx.clear()
+        ctx['something'] = 'test'
+        ctx['over'] = 'test'
+        ctx['obj'] = [1, 2, 3]
+
+        with ctx.copy(justhere='a') as ictx:
+            ictx['else'] = 'else'
+            ictx['over'] = 'over'
+            ictx['obj'] = [1, 2, 3, 4]
+            self.assertEqual(ictx['something'], 'test')
+            self.assertEqual(ictx['justhere'], 'a')
+
+        self.assertNotIn('else', ctx)
+        self.assertNotIn('justhere', ctx)
+        self.assertEqual(ctx['obj'], [1, 2, 3])
+        self.assertEqual(ctx['something'], 'test')
+        self.assertEqual(ctx['over'], 'test')
