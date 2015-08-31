@@ -1,13 +1,14 @@
 #!/usr/bin/env python
+import os
 
 from setuptools import setup, find_packages
-import os
 
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-VERSION = '0.3.0'
+
+VERSION = '0.4'
 
 if __name__ == '__main__':
     setup(
@@ -16,7 +17,8 @@ if __name__ == '__main__':
         author_email='csaba.palankai@gmail.com',
         packages=find_packages(),
         include_package_data=True,
-        version='0.4',
+        version=VERSION,
+        license='MIT',
         description="Python microservice framework",
         url='http://pyrs.readthedocs.org/',
         long_description=read('README.rst'),
@@ -24,8 +26,7 @@ if __name__ == '__main__':
             'Development Status :: 4 - Beta',
             'Environment :: Web Environment',
             'Intended Audience :: Developers',
-            'License :: OSI Approved ::'
-                ' GNU Lesser General Public License v3 (LGPLv3)',
+            'License :: OSI Approved :: MIT License',
             'Natural Language :: English',
             'Programming Language :: Python',
             'Programming Language :: Python :: 2.7',
