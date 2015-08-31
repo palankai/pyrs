@@ -8,8 +8,8 @@ Python MicroService framework
 .. image:: https://coveralls.io/repos/palankai/pyrs/badge.svg?branch=master&service=github
     :target: https://coveralls.io/github/palankai/pyrs?branch=master
 
-.. image:: https://readthedocs.org/projects/pyrs/badge/?version=latest
-    :target: https://readthedocs.org/projects/pyrs/?badge=latest
+.. image:: https://readthedocs.org/projects/pyrs/badge/
+    :target: http://pyrs.readthedocs.org/
     :alt: Documentation Status
 
 
