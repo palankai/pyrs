@@ -2,7 +2,7 @@
 
 set -e
 
-python -m unittest discover pyrs
+python -m unittest discover .
 
 ./test_set_trace.sh
 

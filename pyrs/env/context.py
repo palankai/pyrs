@@ -37,8 +37,14 @@ class Context(threading.local):
     def __iter__(self):
         return self.data.__iter__()
 
+    def __len__(self):
+        return len(self.data)
+
     def keys(self):
         return self.data.keys()
+
+    def get(self, name, default=None):
+        return self.data.get(name, default)
 
     def items(self):
         return self.data.items()
@@ -68,4 +74,6 @@ class Context(threading.local):
     def __exit__(self, exc_type, exc_value, traceback):
         self._pop()
 
+
+#: pyrs context
 ctx = Context()

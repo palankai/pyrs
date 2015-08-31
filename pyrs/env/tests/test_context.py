@@ -2,19 +2,19 @@ import threading
 import unittest
 
 
-from .. import base
+from .. import context
 
 
 class TestContext(unittest.TestCase):
 
     def test_basic_usage(self):
-        ctx = base.Context()
+        ctx = context.Context()
         ctx['something'] = 'test'
 
         self.assertEqual(ctx['something'], 'test')
 
     def test_context_manager_global_behaviour(self):
-        ctx = base.Context({'global': {}})
+        ctx = context.Context({'global': {}})
         ctx['global']['x'] = 1
 
         with ctx as ictx:
@@ -23,7 +23,7 @@ class TestContext(unittest.TestCase):
         self.assertEqual(ctx['global'], {'x': 2})
 
     def test_with_other_thread(self):
-        ctx = base.Context()
+        ctx = context.Context()
         ctx['exists'] = 1
         ctx['obj'] = [1, 2, 3]
 
@@ -39,13 +39,13 @@ class TestContext(unittest.TestCase):
         self.assertEqual(ctx['obj'], [1, 2, 3])
 
     def test_dictlike(self):
-        dl = base.Context()
+        dl = context.Context()
         dl['aaa'] = 12
 
         self.assertEqual(dict(dl), {'aaa': 12})
 
     def test_context_manager_copywith(self):
-        ctx = base.Context()
+        ctx = context.Context()
         ctx.clear()
         ctx['something'] = 'test'
         ctx['over'] = 'test'
